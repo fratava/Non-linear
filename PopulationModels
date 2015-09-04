@@ -1,0 +1,84 @@
+Pkg.add("PyPlot")
+using PyPlot
+
+function f(x,r)
+    return r*x*(1-x)
+end
+
+x0=0.0001
+r=3.74
+xt=[f(x0,r)]
+I=[0]
+for i in 1:100
+    x=f(x0,r)
+    push!(xt,x)
+    push!(I,i)
+    x0=x
+end
+
+plot(I,xt,"-o",color="k",mfc="k",mec="w",alpha=0.5,ms=5)
+title("x_t vs t")
+xlabel(L"$t$")
+ylabel(L"$x_t$")
+ylim(0,1.0)
+show()
+
+rs=linspace(2,4,2000);
+rc=[2.0]
+X=[f(0.1,2.0)]
+
+for r in rs
+    x=0.1
+    
+    for ii=1:1000
+        x=f(x,r)
+    end
+    
+    for ii=1:200
+        x=f(x,r)
+        push!(rc,r)
+        push!(X,x)
+    end
+end
+
+rlabel = [2.9,3.3,3.47016,3.55726,3.73]
+rrr    = ["2.9","3.3","3.47016","3.55726","3.73"]
+
+plot(rc,X,"o",mfc="gray",mec="gray",alpha=0.2,ms=1)
+
+for ll in 1:length(rlabel)
+    axvline(x=rlabel[ll],lw=1,color="k",ls="--")
+    xpos = rlabel[ll] + 0.01
+    ypos = 0.15
+    text(xpos,ypos,rrr[ll],rotation="vertical",fontsize=10)
+end
+
+title("Ecuación logística")
+xlabel(L"$r$")
+ylabel(L"$x*$")
+xlim(2,4)
+savefig("Logistica.png",dpi=100)
+show()
+
+
+figure(0)
+subplot(211)
+plot(rc,X,"o",mfc="gray",mec="gray",alpha=0.2,ms=1)
+title(L"$Diagrama de Bifurcaciones$")
+xlabel(L"$r$")
+ylabel(L"$x^*$")
+ylim(0,1)
+xlim(2,4)
+
+subplot(212)
+plot(I,xt,"-s",color="b",mfc="k",mec="w",alpha=0.5,ms=5,label=L"$r=2$")
+#title("xt vs t")
+xlabel(L"$t$")
+ylabel(L"$x_t$")
+ylim(0,1)
+xlim(0,length(I))
+#legend([L"$r=2$"])
+legend(["r=3.74",r])
+grid()
+
+savefig("Combinado.png",dpi=100)
